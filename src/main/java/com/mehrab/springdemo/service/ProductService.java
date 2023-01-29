@@ -1,8 +1,7 @@
 package com.mehrab.springdemo.service;
 
-import com.mehrab.springdemo.payload.Product;
-import org.springframework.stereotype.Service;
+import com.mehrab.springdemo.payload.product.ProductResponse;
 
 public interface ProductService {
-    Product[] getProducts();
+    ProductResponse[] getProducts();
 }

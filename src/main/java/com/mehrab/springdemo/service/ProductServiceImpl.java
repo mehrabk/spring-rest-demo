@@ -1,39 +1,35 @@
 package com.mehrab.springdemo.service;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mehrab.springdemo.config.Utils;
-import com.mehrab.springdemo.payload.Product;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mehrab.springdemo.payload.product.ProductResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Value("${external.api}")
-    private String ExAPI;
-
-    @Autowired
-    Utils webConfig;
+    @Value("${dummyjson.api}")
+    private String dummyjsonAPI;
 
     @Override
-    public Product[] getProducts() {
-        HttpRequest req = HttpRequest.newBuilder().uri(URI.create(ExAPI+"/products")).GET().build();
+    public ProductResponse[] getProducts() {
+        // httpClient is both async and sync module for http request
+        HttpClient http = HttpClient.newHttpClient();
+        HttpRequest req = HttpRequest.newBuilder().uri(URI.create(dummyjsonAPI+"/products")).GET().build();
         ObjectMapper objectMapper = new ObjectMapper();
-        Product[] products;
+        ProductResponse[] products;
         try {
-            HttpResponse<String> res = webConfig.getHttp().send(req, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> res = http.send(req, HttpResponse.BodyHandlers.ofString());
             String result = res.body();
             int start = result.indexOf("[");
             int end = result.lastIndexOf("]");
-            products = objectMapper.readValue(result.substring(start,end+1), Product[].class);
+            products = objectMapper.readValue(result.substring(start,end+1), ProductResponse[].class);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

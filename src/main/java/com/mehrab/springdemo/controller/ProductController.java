@@ -1,6 +1,6 @@
 package com.mehrab.springdemo.controller;
 
-import com.mehrab.springdemo.payload.Product;
+import com.mehrab.springdemo.payload.product.ProductResponse;
 import com.mehrab.springdemo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +20,7 @@ public class ProductController {
 
 
     @RequestMapping(method = RequestMethod.GET, path = "/getAll")
-    public Product[] getAll() {
+    public ProductResponse[] getAll() {
         return productService.getProducts();
     }
 }

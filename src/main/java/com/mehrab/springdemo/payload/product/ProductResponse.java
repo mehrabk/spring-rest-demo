@@ -1,9 +1,9 @@
-package com.mehrab.springdemo.payload;
+package com.mehrab.springdemo.payload.product;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-public class Product implements Serializable {
+public class ProductResponse implements Serializable {
     private int id;
     private String title;
     private String description;
@@ -16,10 +16,10 @@ public class Product implements Serializable {
     private String thumbnail;
     private List<String> images = new ArrayList<>();
 
-    public Product() {
+    public ProductResponse() {
     }
 
-    public Product(int id, String title, String description, float price, float discountPercentage, float rating, int stock, String brand, String category, String thumbnail, List<String> images) {
+    public ProductResponse(int id, String title, String description, float price, float discountPercentage, float rating, int stock, String brand, String category, String thumbnail, List<String> images) {
         this.id = id;
         this.title = title;
         this.description = description;
