@@ -36,7 +36,7 @@ public class SecurityDemoController {
         thread.start();
         thread.join();
 
-        System.out.println(authentication.getDetails());
+        System.out.println("Authentication Details -> " + authentication.getDetails());
 
         return "this page shoulde be private😍😍 \n welcome to the VIP room ~[" + getName(authentication) + "]~";
     }

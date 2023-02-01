@@ -1,0 +1,3 @@
+- servlet -> is a container such as tomcat JBoss
+- client request to an endpoint is going to hit a specific servlet
+- between the servlet and produce the response there is a list of filers(do side effects, logs)
