@@ -1,6 +1,7 @@
 package com.mehrab.springdemo.config;
 
 import com.mehrab.springdemo.security.RobotFilter;
+import com.mehrab.springdemo.security.authenticationProvider.MehrabAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -29,6 +30,7 @@ public class SecurityConfig {
                         authz.anyRequest().authenticated();
                 }).formLogin(Customizer.withDefaults()) // set springboot default login page for forbidden pages
                 .addFilterBefore(new RobotFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authenticationProvider(new MehrabAuthenticationProvider())
 //                .oauth2Login(Customizer.withDefaults()) // we tell filterchain that login with openID (built on top of oauth2)
                 .build();
 
@@ -39,7 +41,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(User.builder()
-                .username("mehrab")
+                .username("mehrab2")
                 .password("{noop}zaq123")
                 .authorities("ROLE_user")
                 .build());
