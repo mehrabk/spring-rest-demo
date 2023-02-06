@@ -5,17 +5,27 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 
 public class RobotFilter extends OncePerRequestFilter {
 
     private final String HEADER_NAME = "x-robot-password";
+
+    // authentication manager => transform an authentication request into an authentication object
+
+    // if we want robot filter to use authentication manager
+    private final AuthenticationManager authenticationManager;
+
+    public RobotFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -29,16 +39,21 @@ public class RobotFilter extends OncePerRequestFilter {
         }
 
         var password = request.getHeader(HEADER_NAME);
-        if (!"beep-boop".equals(password)){
+        RobotAuthentication authRequest = RobotAuthentication.unAuthenticated(password);
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(authRequest);
+            var newContext = SecurityContextHolder.createEmptyContext();
+            newContext.setAuthentication(authentication);
+            SecurityContextHolder.setContext(newContext);
+            filterChain.doFilter(request, response);
+            return;
+        } catch (AuthenticationException e) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setCharacterEncoding("utf-8");
             response.setContentType("text/plain");
-            response.getWriter().println("you are not Ms Robot 🤖⛔");
+            response.getWriter().println(e.getMessage());
             return;
         }
-        var newContext = SecurityContextHolder.createEmptyContext();
-        newContext.setAuthentication(new RobotAuthentication());
-        SecurityContextHolder.setContext(newContext);
-        filterChain.doFilter(request, response);
     }
 }
