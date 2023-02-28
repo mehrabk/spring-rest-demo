@@ -18,10 +18,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 // SecurityContextHolder.class ->  public static SecurityContext getContext(){...}
@@ -67,13 +71,24 @@ public class SecurityConfig {
 
     // UserDetailsService -> repository of users
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        // using InMemoryUserDetailsManager
         return new InMemoryUserDetailsManager(User.builder()
                 .username("mehrab2")
                 .password("{noop}zaq123")
                 .authorities("ROLE_user")
                 .build());
+
+        // using JdbcUserDetailsManager
+//        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+//        userDetailsManager.createUser(User.builder().username("mehrab123").password("zaq123").authorities("ROLE_admin").build());
+//        return userDetailsManager;
     }
+
+//    @Bean
+//    public PasswordEncoder passwordEncoder(){
+//        return NoOpPasswordEncoder.getInstance();
+//    }
 
     // provider manager when user logged in produces an event and when faild too produces event (spring event) for listen those event...
     @Bean
