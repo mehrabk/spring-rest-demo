@@ -1,6 +1,6 @@
-package com.mehrab.springdemo.security.authenticationProvider;
+package com.mehrab.springdemo.security.robot;
 
-import com.mehrab.springdemo.security.RobotAuthentication;
+import com.mehrab.springdemo.security.robot.RobotAuthentication;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;

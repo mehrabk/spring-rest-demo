@@ -1,4 +1,4 @@
-package com.mehrab.springdemo.security.authenticationProvider;
+package com.mehrab.springdemo.security.person;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,8 +1,10 @@
 package com.mehrab.springdemo.config;
 
-import com.mehrab.springdemo.security.RobotFilter;
-import com.mehrab.springdemo.security.authenticationProvider.MehrabAuthenticationProvider;
-import com.mehrab.springdemo.security.authenticationProvider.RobotAuthenticationProvider;
+import com.mehrab.springdemo.security.RateLimitAuthenticationProvider;
+import com.mehrab.springdemo.security.robot.RobotFilter;
+import com.mehrab.springdemo.security.person.MehrabAuthenticationProvider;
+import com.mehrab.springdemo.security.robot.RobotAuthenticationProvider;
+import com.mehrab.springdemo.security.robot.RobotLoginConfigurer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -35,9 +38,14 @@ public class SecurityConfig {
                     .authenticationEventPublisher(publisher);
         }
 
-        ProviderManager providerManager = new ProviderManager(new RobotAuthenticationProvider(List.of("beep-boop", "boop-beep")));
+        // (1)
+//        ProviderManager providerManager = new ProviderManager(new RobotAuthenticationProvider(List.of("beep-boop", "boop-beep")));
         // we are going to wire the event publisher in it
-        providerManager.setAuthenticationEventPublisher(publisher);
+//        providerManager.setAuthenticationEventPublisher(publisher);
+
+        // (2)
+//        var configurer = new RobotLoginConfigurer().password("beep-boop").password("boop-beep");
+
 
         return http
                 .authorizeHttpRequests((authz) -> {
@@ -46,7 +54,10 @@ public class SecurityConfig {
                         authz.requestMatchers("/favicon.ico").permitAll();
                         authz.anyRequest().authenticated();
                 }).formLogin(Customizer.withDefaults()) // set springboot default login page for forbidden pages
-                .addFilterBefore(new RobotFilter(providerManager), UsernamePasswordAuthenticationFilter.class)
+                .httpBasic(Customizer.withDefaults()) // can login with curl (authentication provider doesnt care aboute the request)
+//                .addFilterBefore(new RobotFilter(providerManager), UsernamePasswordAuthenticationFilter.class) //(1)
+//                .apply(configurer).and() // create a custom login configure with correct pattern (2)
+                .apply(new RobotLoginConfigurer().password("beep-boop").password("boop-beep")).and() // (3)
                 .authenticationProvider(new MehrabAuthenticationProvider())
 //                .oauth2Login(Customizer.withDefaults()) // we tell filterchain that login with openID (built on top of oauth2)
                 .build();

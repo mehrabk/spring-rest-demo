@@ -1,4 +1,4 @@
-package com.mehrab.springdemo.security;
+package com.mehrab.springdemo.security.robot;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,5 +1,6 @@
-package com.mehrab.springdemo.security;
+package com.mehrab.springdemo.security.robot;
 
+import com.mehrab.springdemo.security.robot.RobotAuthentication;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +44,7 @@ public class RobotFilter extends OncePerRequestFilter {
 
         try {
             Authentication authentication = authenticationManager.authenticate(authRequest);
+//            Authentication authentication = authenticationManager.authenticate(new RobotAuthentication(Collections.emptyList(), password));
             var newContext = SecurityContextHolder.createEmptyContext();
             newContext.setAuthentication(authentication);
             SecurityContextHolder.setContext(newContext);
